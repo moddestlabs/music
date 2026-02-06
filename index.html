@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMusic - Secure Music Library</title>
+    <title>Christian Music Project</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.svg">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JMusic">
+    
     <link rel="stylesheet" href="styles.css">
+    <!-- 
+        Admin Tool: Open admin.html to encrypt and add new songs
+        Music Folder: Songs are loaded from /music/ directory
+    -->
 </head>
 <body>
     <div class="container">
@@ -20,12 +35,23 @@
                         </linearGradient>
                     </defs>
                 </svg>
-                <h1>JMusic</h1>
+                <h1>Music</h1>
             </div>
-            <p class="subtitle">Your Secure Music Library</p>
+            <p class="subtitle">Christ-focused Music Collaboration</p>
         </header>
 
         <main class="main-content">
+            <div class="filter-section">
+                <div class="filter-header">
+                    <label>Filter by Genre:</label>
+                    <button class="clear-filters" id="clearFilters" style="display: none;">Clear All</button>
+                </div>
+                <div class="genre-filters" id="genreFilters">
+                    <!-- Genre checkboxes will be dynamically loaded here -->
+                </div>
+                <div class="song-count" id="songCount">Loading...</div>
+            </div>
+            
             <div class="music-list" id="musicList">
                 <!-- Music items will be dynamically loaded here -->
             </div>

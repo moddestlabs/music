@@ -1,0 +1,30 @@
+# Don't commit unencrypted audio files
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.ogg
+
+# Generated favicon files (keep only SVG sources)
+favicon.ico
+favicon-*.png
+android-chrome-*.png
+mstile-*.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Only commit encrypted files and metadata in music folder
+music/*
+!music/*.encrypted
+!music/*.json
+!music/README.md
+!music/catalog.json

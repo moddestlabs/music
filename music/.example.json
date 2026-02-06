@@ -1,0 +1,12 @@
+{
+  "title": "Example Song",
+  "genres": [
+    "Electronic",
+    "Ambient"
+  ],
+  "duration": "3:45",
+  "filename": "example-song",
+  "salt": "AAAAAAAAAAAAAAAAAAAAAA==",
+  "iv": "AAAAAAAAAAAAAAAA",
+  "encryptedAt": "2026-02-06T12:00:00.000Z"
+}

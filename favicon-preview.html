@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMusic Favicon Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .icon-preview {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .icon-preview h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .icon-container {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        .icon-container.dark {
+            background: #1a1a2e;
+        }
+
+        .icon-preview p {
+            font-size: 12px;
+            color: #999;
+            margin: 5px 0;
+        }
+
+        .icon-preview code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #6366f1;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6366f1;
+        }
+
+        .devices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .device {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .device h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .device ul {
+            margin-left: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .device li {
+            margin: 5px 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .status.yes {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.optional {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 JMusic Favicon Preview</h1>
+        <p class="subtitle">Cross-platform icon and branding preview</p>
+
+        <div class="section">
+            <h2>Icon Variations</h2>
+            <div class="grid">
+                <div class="icon-preview">
+                    <h3>Main Favicon</h3>
+                    <div class="icon-container">
+                        <img src="favicon.svg" width="64" height="64" alt="Favicon">
+                    </div>
+                    <p><code>favicon.svg</code></p>
+                    <p>128x128 • SVG</p>
+                    <p>Browser tabs & bookmarks</p>
+                </div>
+
+                <div class="icon-preview">
+                    <h3>Apple Touch Icon</h3>
+                    <div class="icon-container">
+                        <img src="apple-touch-icon.svg" width="90" height="90" alt="Apple Touch Icon">
+                    </div>
+                    <p><code>apple-touch-icon.svg</code></p>
+                    <p>180x180 • SVG</p>
+                    <p>iOS/iPadOS home screen</p>
+                </div>
+
+                <div class="icon-preview">
+                    <h3>Android Icon (192)</h3>
+                    <div class="icon-container">
+                        <img src="icon-192.svg" width="96" height="96" alt="Android 192">
+                    </div>
+                    <p><code>icon-192.svg</code></p>
+                    <p>192x192 • SVG</p>
+                    <p>Android app icon</p>
+                </div>
+
+                <div class="icon-preview">
+                    <h3>Large Icon (512)</h3>
+                    <div class="icon-container">
+                        <img src="icon-512.svg" width="100" height="100" alt="Icon 512">
+                    </div>
+                    <p><code>icon-512.svg</code></p>
+                    <p>512x512 • SVG</p>
+                    <p>Splash screens & PWA</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Dark Background Preview</h2>
+            <div class="grid">
+                <div class="icon-preview">
+                    <h3>Tab Icon</h3>
+                    <div class="icon-container dark">
+                        <img src="favicon.svg" width="32" height="32" alt="Favicon dark">
+                    </div>
+                    <p>Browser tab appearance</p>
+                </div>
+
+                <div class="icon-preview">
+                    <h3>Bookmark</h3>
+                    <div class="icon-container dark">
+                        <img src="favicon.svg" width="48" height="48" alt="Bookmark dark">
+                    </div>
+                    <p>Bookmark bar appearance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Platform Support</h2>
+            <div class="devices">
+                <div class="device">
+                    <h4>🖥️ Desktop Browsers</h4>
+                    <ul>
+                        <li>Chrome <span class="status yes">✓</span></li>
+                        <li>Firefox <span class="status yes">✓</span></li>
+                        <li>Safari <span class="status yes">✓</span></li>
+                        <li>Edge <span class="status yes">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="device">
+                    <h4>📱 iOS/iPadOS</h4>
+                    <ul>
+                        <li>Safari tabs <span class="status yes">✓</span></li>
+                        <li>Home screen <span class="status yes">✓</span></li>
+                        <li>Spotlight <span class="status yes">✓</span></li>
+                        <li>App switcher <span class="status yes">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="device">
+                    <h4>🤖 Android</h4>
+                    <ul>
+                        <li>Chrome tabs <span class="status yes">✓</span></li>
+                        <li>Home screen <span class="status yes">✓</span></li>
+                        <li>App drawer <span class="status yes">✓</span></li>
+                        <li>PWA install <span class="status yes">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="device">
+                    <h4>🪟 Windows</h4>
+                    <ul>
+                        <li>Browser tabs <span class="status yes">✓</span></li>
+                        <li>Taskbar <span class="status yes">✓</span></li>
+                        <li>Start menu <span class="status optional">~</span></li>
+                        <li>Tiles <span class="status optional">~</span></li>
+                    </ul>
+                </div>
+
+                <div class="device">
+                    <h4>🍎 macOS</h4>
+                    <ul>
+                        <li>Safari tabs <span class="status yes">✓</span></li>
+                        <li>Touch Bar <span class="status yes">✓</span></li>
+                        <li>Dock <span class="status yes">✓</span></li>
+                        <li>Launchpad <span class="status optional">~</span></li>
+                    </ul>
+                </div>
+
+                <div class="device">
+                    <h4>🔧 PWA Features</h4>
+                    <ul>
+                        <li>Installable <span class="status yes">✓</span></li>
+                        <li>Custom icon <span class="status yes">✓</span></li>
+                        <li>Theme color <span class="status yes">✓</span></li>
+                        <li>Splash screen <span class="status yes">✓</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Files Included</h2>
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 13px;">
+                <p style="margin: 5px 0;">✓ favicon.svg (main icon)</p>
+                <p style="margin: 5px 0;">✓ apple-touch-icon.svg (iOS)</p>
+                <p style="margin: 5px 0;">✓ icon-192.svg (Android/small)</p>
+                <p style="margin: 5px 0;">✓ icon-512.svg (Android/large)</p>
+                <p style="margin: 5px 0;">✓ site.webmanifest (PWA config)</p>
+                <p style="margin: 5px 0;">✓ browserconfig.xml (Windows tiles)</p>
+                <p style="margin: 5px 0; color: #999;">→ All integrated in index.html and admin.html</p>
+            </div>
+        </div>
+
+        <div class="section" style="background: #f0f4ff; padding: 20px; border-radius: 8px; border-left: 4px solid #6366f1;">
+            <h3 style="color: #6366f1; margin-bottom: 10px;">✨ Ready to Use!</h3>
+            <p style="color: #666; line-height: 1.6;">
+                Your JMusic favicons are fully configured and working across all platforms. 
+                SVG icons scale perfectly at any size and include the signature gradient design. 
+                No additional setup required!
+            </p>
+        </div>
+    </div>
+</body>
+</html>

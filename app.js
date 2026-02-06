@@ -204,18 +204,24 @@ function renderMusicList() {
             ? `<div class="genre-tags">${song.genres.map(g => `<span class="genre-tag">${g}</span>`).join('')}</div>`
             : '';
         
+        // Artist image path (e.g., "Matt Strauss.jpg")
+        const artistImage = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : null;
+        const artist = song.artist || 'Unknown Artist';
+        const title = song.title || 'Untitled';
+        
         return `
             <div class="music-item" onclick="openPasswordModal(${song.id})">
                 <div class="music-item-content">
                     <div class="music-item-header">
-                        <div class="music-icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="white">
+                        <div class="music-icon" style="${artistImage ? `background-image: url('${artistImage}'); background-size: cover; background-position: center;` : ''}">
+                            ${!artistImage ? `<svg width="32" height="32" viewBox="0 0 32 32" fill="white">
                                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                                 <circle cx="10" cy="17" r="2"/>
-                            </svg>
+                            </svg>` : ''}
                         </div>
                         <div>
-                            <div class="music-item-title">${song.title}</div>
+                            <div class="music-item-title">${title}</div>
+                            <div class="music-item-artist">${artist}</div>
                             ${genreTags}
                         </div>
                     </div>
@@ -292,13 +298,23 @@ function openPasswordModal(songId) {
     
     currentSong = song;
     
-    document.getElementById('modalSongTitle').textContent = song.title;
-    document.getElementById('modalArtist').textContent = song.genres && song.genres.length > 0 
-        ? song.genres.join(', ') 
-        : 'No genre';
+    const artist = song.artist || 'Unknown Artist';
+    const title = song.title || 'Untitled';
+    const artistImage = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : null;
+    
+    document.getElementById('modalSongTitle').textContent = title;
+    document.getElementById('modalArtist').textContent = artist;
     document.getElementById('modalDuration').textContent = song.duration;
     document.getElementById('passwordInput').value = '';
     document.getElementById('errorMessage').textContent = '';
+    
+    // Update album art with artist image if available
+    const modalAlbumArt = document.getElementById('modalAlbumArt');
+    if (artistImage) {
+        modalAlbumArt.innerHTML = `<img src="${artistImage}" alt="${artist}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"url(#albumGradient)\"/><circle cx=\"50\" cy=\"50\" r=\"20\" fill=\"rgba(255,255,255,0.3)\"/><defs><linearGradient id=\"albumGradient\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#6366f1\"/><stop offset=\"100%\" style=\"stop-color:#a855f7\"/></linearGradient></defs></svg>';">`;
+    } else {
+        modalAlbumArt.innerHTML = `<svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#albumGradient)"/><circle cx="50" cy="50" r="20" fill="rgba(255,255,255,0.3)"/><defs><linearGradient id="albumGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+    }
     
     document.getElementById('passwordModal').classList.add('active');
     document.getElementById('passwordInput').focus();
@@ -417,10 +433,20 @@ function base64ToArrayBuffer(base64) {
 
 // Open player modal
 function openPlayerModal(decryptedBlob) {
-    document.getElementById('playerSongTitle').textContent = currentSong.title;
-    document.getElementById('playerArtist').textContent = currentSong.genres && currentSong.genres.length > 0
-        ? currentSong.genres.join(', ')
-        : 'No genre';
+    const artist = currentSong.artist || 'Unknown Artist';
+    const title = currentSong.title || 'Untitled';
+    const artistImage = currentSong.artist ? `music/${encodeURIComponent(currentSong.artist)}.jpg` : null;
+    
+    document.getElementById('playerSongTitle').textContent = title;
+    document.getElementById('playerArtist').textContent = artist;
+    
+    // Update player album art with artist image if available
+    const playerAlbumArt = document.querySelector('.player-album-art');
+    if (artistImage) {
+        playerAlbumArt.innerHTML = `<img src="${artistImage}" alt="${artist}" style="width: 200px; height: 200px; border-radius: 20px; object-fit: cover; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\"><rect width=\"200\" height=\"200\" fill=\"url(#playerGradient)\" rx=\"20\"/><circle cx=\"100\" cy=\"100\" r=\"40\" fill=\"rgba(255,255,255,0.2)\"/><circle cx=\"100\" cy=\"100\" r=\"15\" fill=\"rgba(255,255,255,0.4)\"/><defs><linearGradient id=\"playerGradient\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#6366f1\"/><stop offset=\"100%\" style=\"stop-color:#a855f7\"/></linearGradient></defs></svg>';">`;
+    } else {
+        playerAlbumArt.innerHTML = `<svg width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="url(#playerGradient)" rx="20"/><circle cx="100" cy="100" r="40" fill="rgba(255,255,255,0.2)"/><circle cx="100" cy="100" r="15" fill="rgba(255,255,255,0.4)"/><defs><linearGradient id="playerGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+    }
     
     // Create object URL from decrypted blob
     const audioUrl = URL.createObjectURL(decryptedBlob);

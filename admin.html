@@ -256,10 +256,11 @@
 
         <div class="info-box">
             <strong>📝 How it works:</strong>
-            1. Upload your MP3 file (filename will be the song title)<br>
+            1. Upload your MP3 file (filename format: Artist_Title)<br>
             2. Enter genres and password<br>
             3. Click encrypt to generate encrypted file + metadata JSON<br>
-            4. Upload both files to the <code>/music/</code> folder on GitHub
+            4. Upload both files to the <code>/music/</code> folder on GitHub<br>
+            5. Upload artist image (Artist Name.jpg) to <code>/music/</code> folder
         </div>
 
         <form id="encryptForm">
@@ -267,7 +268,7 @@
                 <label for="audioFile">Select Audio File *</label>
                 <input type="file" id="audioFile" accept="audio/*" required>
                 <div class="file-info" id="fileInfo"></div>
-                <p class="helper-text">Filename will be used as the song title</p>
+                <p class="helper-text">Filename format: Artist_Title (e.g., Matt Strauss_My Rock of Salvation.mp3)</p>
             </div>
 
             <div class="form-group">
@@ -353,10 +354,21 @@
             // Show file info
             const fileInfo = document.getElementById('fileInfo');
             const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-            const fileTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+            const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+            
+            // Parse Artist_Title format
+            let artist = 'Unknown Artist';
+            let title = nameWithoutExt;
+            if (nameWithoutExt.includes('_')) {
+                const parts = nameWithoutExt.split('_');
+                artist = parts[0].trim();
+                title = parts.slice(1).join('_').trim();
+            }
+            
             fileInfo.innerHTML = `
                 <strong>File:</strong> ${file.name}<br>
-                <strong>Title:</strong> ${fileTitle}<br>
+                <strong>Artist:</strong> ${artist}<br>
+                <strong>Title:</strong> ${title}<br>
                 <strong>Size:</strong> ${sizeMB} MB<br>
                 <strong>Type:</strong> ${file.type || 'Unknown'}
             `;
@@ -372,8 +384,16 @@
                 return;
             }
 
-            // Extract title from filename
-            const title = selectedFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+            // Extract artist and title from filename (format: Artist_Title)
+            const nameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, "");
+            let artist = 'Unknown Artist';
+            let title = nameWithoutExt;
+            if (nameWithoutExt.includes('_')) {
+                const parts = nameWithoutExt.split('_');
+                artist = parts[0].trim();
+                title = parts.slice(1).join('_').trim();
+            }
+            
             const genresInput = document.getElementById('genres').value.trim();
             const genres = genresInput 
                 ? genresInput.split(',').map(g => g.trim()).filter(g => g.length > 0)
@@ -406,6 +426,7 @@
                 // Step 3: Generate metadata
                 updateProgress(3, 'active');
                 const metadata = {
+                    artist: artist,
                     title: title,
                     genres: genres,
                     duration: duration,

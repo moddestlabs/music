@@ -1,20 +1,12 @@
-# JMusic - Secure Music Library
+# Music Project - Secure Music Library
 
-A sleek password-protected music web application with client-side encryption, built for GitHub Pages.
+A password-protected music web application with client-side encryption, built for GitHub Pages.
 
-## ✨ Features
+## Features
 
-- 🔐 **AES-256-GCM Encryption** - Military-grade encryption for all audio files
-- 🎨 **Beautiful UI** - Modern gradient design with smooth animations
-- 🏷️ **Genre Filtering** - Multi-select genre filters to organize your library
-- 🎵 **Custom Player** - Full-featured audio player with progress tracking
-- 🔒 **Password Protection** - Each song requires a password to decrypt and play
-- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
-- 🚀 **GitHub Pages Ready** - Fully static, no server required
-- 🛠️ **Admin Tool** - Easy-to-use web interface for encrypting and adding songs
-- 🎯 **PWA Support** - Installable as a progressive web app with custom icons
+- "Just works."
 
-## 🚀 Quick Start
+## Quick Start
 
 ### For Users
 
@@ -47,7 +39,7 @@ A sleek password-protected music web application with client-side encryption, bu
 ## 📁 Project Structure
 
 ```
-jmusic/
+music/
 ├── index.html           # Main music player interface
 ├── admin.html           # Song encryption tool
 ├── app.js              # Player logic and decryption
@@ -98,27 +90,27 @@ Genre examples: Electronic, Ambient, Chill, Rock, Jazz, Classical, etc.
 
 ## � Progressive Web App (PWA)
 
-JMusic can be installed as a standalone app on any device:
+Music can be installed as a standalone app on any device:
 
 ### Desktop (Chrome, Edge)
-1. Visit your JMusic site
+1. Visit your Music site
 2. Click the install icon in the address bar
 3. Confirm installation
-4. JMusic opens in its own window
+4. Music opens in its own window
 
 ### iOS/iPadOS (Safari)
-1. Open JMusic in Safari
+1. Open Music in Safari
 2. Tap the Share button
 3. Select "Add to Home Screen"
 4. Custom icon appears on your home screen
 
 ### Android (Chrome)
-1. Visit JMusic in Chrome
+1. Visit Music in Chrome
 2. Tap the menu (three dots)
 3. Select "Add to Home Screen" or "Install app"
 4. App icon added to your launcher
 
-Once installed, JMusic works like a native app with offline capabilities for the interface (songs still require internet to load initially).
+Once installed, Music works like a native app with offline capabilities for the interface (songs still require internet to load initially).
 
 ## �🔧 Technologies Used
 

@@ -56,7 +56,9 @@ const musicData = [
     }
 ];
 
-// Simple MD5-like hash function for demo purposes
+// Simple hash function for demo purposes ONLY
+// WARNING: This is NOT secure for production use!
+// For real applications, use proper cryptographic hashing like bcrypt or Web Crypto API
 function simpleHash(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {

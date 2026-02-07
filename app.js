@@ -5,6 +5,7 @@ let currentSong = null;
 let audioPlayer = null;
 let isPlaying = false;
 let decryptedAudioCache = new Map(); // Cache decrypted audio blobs
+let passwordCache = new Map(); // Cache successful passwords by song filename
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', async () => {
@@ -205,19 +206,28 @@ function renderMusicList() {
             : '';
         
         // Artist image path (e.g., "Matt Strauss.jpg")
-        const artistImage = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : null;
         const artist = song.artist || 'Unknown Artist';
         const title = song.title || 'Untitled';
+        const artistImageSrc = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : '';
+        
+        // Create artist icon HTML - use img tag with fallback to SVG
+        const artistIconHTML = song.artist 
+            ? `<img src="${artistImageSrc}" alt="${artist.replace(/"/g, '&quot;')}" class="artist-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+               <svg width="32" height="32" viewBox="0 0 32 32" fill="white" style="display:none;">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                   <circle cx="10" cy="17" r="2"/>
+               </svg>`
+            : `<svg width="32" height="32" viewBox="0 0 32 32" fill="white">
+                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                   <circle cx="10" cy="17" r="2"/>
+               </svg>`;
         
         return `
             <div class="music-item" onclick="openPasswordModal(${song.id})">
                 <div class="music-item-content">
                     <div class="music-item-header">
-                        <div class="music-icon" style="${artistImage ? `background-image: url('${artistImage}'); background-size: cover; background-position: center;` : ''}">
-                            ${!artistImage ? `<svg width="32" height="32" viewBox="0 0 32 32" fill="white">
-                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                                <circle cx="10" cy="17" r="2"/>
-                            </svg>` : ''}
+                        <div class="music-icon">
+                            ${artistIconHTML}
                         </div>
                         <div>
                             <div class="music-item-title">${title}</div>
@@ -292,15 +302,46 @@ function setupEventListeners() {
 }
 
 // Open password modal
-function openPasswordModal(songId) {
+async function openPasswordModal(songId) {
     const song = musicLibrary.find(s => s.id === songId);
     if (!song) return;
     
     currentSong = song;
     
+    // Try cached password for this specific song first
+    const cachedPassword = passwordCache.get(song.filename);
+    if (cachedPassword) {
+        try {
+            const decryptedBlob = await decryptAudioFile(song, cachedPassword);
+            // Success! Open player directly without showing password modal
+            openPlayerModal(decryptedBlob);
+            return;
+        } catch (error) {
+            // Cached password failed, remove it
+            passwordCache.delete(song.filename);
+        }
+    }
+    
+    // Try any other cached passwords (in case songs share the same password)
+    for (const [filename, password] of passwordCache.entries()) {
+        if (filename !== song.filename) {
+            try {
+                const decryptedBlob = await decryptAudioFile(song, password);
+                // Success! Cache this password for the current song too
+                passwordCache.set(song.filename, password);
+                openPlayerModal(decryptedBlob);
+                return;
+            } catch (error) {
+                // This password doesn't work, try next one
+                continue;
+            }
+        }
+    }
+    
+    // No cached password worked, show the modal
     const artist = song.artist || 'Unknown Artist';
     const title = song.title || 'Untitled';
-    const artistImage = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : null;
+    const artistImageSrc = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : '';
     
     document.getElementById('modalSongTitle').textContent = title;
     document.getElementById('modalArtist').textContent = artist;
@@ -310,10 +351,21 @@ function openPasswordModal(songId) {
     
     // Update album art with artist image if available
     const modalAlbumArt = document.getElementById('modalAlbumArt');
-    if (artistImage) {
-        modalAlbumArt.innerHTML = `<img src="${artistImage}" alt="${artist}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"url(#albumGradient)\"/><circle cx=\"50\" cy=\"50\" r=\"20\" fill=\"rgba(255,255,255,0.3)\"/><defs><linearGradient id=\"albumGradient\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#6366f1\"/><stop offset=\"100%\" style=\"stop-color:#a855f7\"/></linearGradient></defs></svg>';">`;
+    const defaultSvg = `<svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#albumGradient)"/><circle cx="50" cy="50" r="20" fill="rgba(255,255,255,0.3)"/><defs><linearGradient id="albumGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+    
+    if (artistImageSrc) {
+        const img = new Image();
+        img.src = artistImageSrc;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.onerror = function() {
+            modalAlbumArt.innerHTML = defaultSvg;
+        };
+        modalAlbumArt.innerHTML = '';
+        modalAlbumArt.appendChild(img);
     } else {
-        modalAlbumArt.innerHTML = `<svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#albumGradient)"/><circle cx="50" cy="50" r="20" fill="rgba(255,255,255,0.3)"/><defs><linearGradient id="albumGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+        modalAlbumArt.innerHTML = defaultSvg;
     }
     
     document.getElementById('passwordModal').classList.add('active');
@@ -340,7 +392,10 @@ async function handlePasswordSubmit(e) {
         // Try to decrypt the file
         const decryptedBlob = await decryptAudioFile(currentSong, password);
         
-        // If successful, close modal and open player
+        // If successful, cache the password for this song
+        passwordCache.set(currentSong.filename, password);
+        
+        // Close modal and open player
         closePasswordModal();
         openPlayerModal(decryptedBlob);
         
@@ -435,17 +490,30 @@ function base64ToArrayBuffer(base64) {
 function openPlayerModal(decryptedBlob) {
     const artist = currentSong.artist || 'Unknown Artist';
     const title = currentSong.title || 'Untitled';
-    const artistImage = currentSong.artist ? `music/${encodeURIComponent(currentSong.artist)}.jpg` : null;
+    const artistImageSrc = currentSong.artist ? `music/${encodeURIComponent(currentSong.artist)}.jpg` : '';
     
     document.getElementById('playerSongTitle').textContent = title;
     document.getElementById('playerArtist').textContent = artist;
     
     // Update player album art with artist image if available
     const playerAlbumArt = document.querySelector('.player-album-art');
-    if (artistImage) {
-        playerAlbumArt.innerHTML = `<img src="${artistImage}" alt="${artist}" style="width: 200px; height: 200px; border-radius: 20px; object-fit: cover; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\"200\" height=\"200\" viewBox=\"0 0 200 200\"><rect width=\"200\" height=\"200\" fill=\"url(#playerGradient)\" rx=\"20\"/><circle cx=\"100\" cy=\"100\" r=\"40\" fill=\"rgba(255,255,255,0.2)\"/><circle cx=\"100\" cy=\"100\" r=\"15\" fill=\"rgba(255,255,255,0.4)\"/><defs><linearGradient id=\"playerGradient\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:#6366f1\"/><stop offset=\"100%\" style=\"stop-color:#a855f7\"/></linearGradient></defs></svg>';">`;
+    const defaultSvg = `<svg width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="url(#playerGradient)" rx="20"/><circle cx="100" cy="100" r="40" fill="rgba(255,255,255,0.2)"/><circle cx="100" cy="100" r="15" fill="rgba(255,255,255,0.4)"/><defs><linearGradient id="playerGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+    
+    if (artistImageSrc) {
+        const img = new Image();
+        img.src = artistImageSrc;
+        img.style.width = '200px';
+        img.style.height = '200px';
+        img.style.borderRadius = '20px';
+        img.style.objectFit = 'cover';
+        img.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.4)';
+        img.onerror = function() {
+            playerAlbumArt.innerHTML = defaultSvg;
+        };
+        playerAlbumArt.innerHTML = '';
+        playerAlbumArt.appendChild(img);
     } else {
-        playerAlbumArt.innerHTML = `<svg width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="url(#playerGradient)" rx="20"/><circle cx="100" cy="100" r="40" fill="rgba(255,255,255,0.2)"/><circle cx="100" cy="100" r="15" fill="rgba(255,255,255,0.4)"/><defs><linearGradient id="playerGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs></svg>`;
+        playerAlbumArt.innerHTML = defaultSvg;
     }
     
     // Create object URL from decrypted blob

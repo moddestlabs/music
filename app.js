@@ -205,29 +205,21 @@ function renderMusicList() {
             ? `<div class="genre-tags">${song.genres.map(g => `<span class="genre-tag">${g}</span>`).join('')}</div>`
             : '';
         
-        // Artist image path (e.g., "Matt Strauss.jpg")
         const artist = song.artist || 'Unknown Artist';
         const title = song.title || 'Untitled';
-        const artistImageSrc = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : '';
         
-        // Create artist icon HTML - use img tag with fallback to SVG
-        const artistIconHTML = song.artist 
-            ? `<img src="${artistImageSrc}" alt="${artist.replace(/"/g, '&quot;')}" class="artist-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-               <svg width="32" height="32" viewBox="0 0 32 32" fill="white" style="display:none;">
-                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                   <circle cx="10" cy="17" r="2"/>
-               </svg>`
-            : `<svg width="32" height="32" viewBox="0 0 32 32" fill="white">
-                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                   <circle cx="10" cy="17" r="2"/>
-               </svg>`;
+        // Generate unique ID for this music item's icon
+        const iconId = `music-icon-${song.id}`;
         
         return `
             <div class="music-item" onclick="openPasswordModal(${song.id})">
                 <div class="music-item-content">
                     <div class="music-item-header">
-                        <div class="music-icon">
-                            ${artistIconHTML}
+                        <div class="music-icon" id="${iconId}" data-artist="${song.artist || ''}">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="white">
+                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                <circle cx="10" cy="17" r="2"/>
+                            </svg>
                         </div>
                         <div>
                             <div class="music-item-title">${title}</div>
@@ -247,6 +239,36 @@ function renderMusicList() {
             </div>
         `;
     }).join('');
+    
+    // Load artist images after rendering
+    loadArtistImages();
+}
+
+// Load artist images for music items
+function loadArtistImages() {
+    // Find all music icons that have an artist
+    const musicIcons = document.querySelectorAll('.music-icon[data-artist]');
+    
+    musicIcons.forEach(icon => {
+        const artist = icon.dataset.artist;
+        if (!artist) return;
+        
+        // Create image element
+        const img = new Image();
+        img.className = 'artist-image';
+        img.src = `music/${encodeURIComponent(artist)}.jpg`;
+        
+        img.onload = function() {
+            // Image loaded successfully, replace SVG with image
+            icon.innerHTML = '';
+            icon.appendChild(img);
+        };
+        
+        // If image fails to load, keep the default SVG (do nothing)
+        img.onerror = function() {
+            // Keep the SVG that's already there
+        };
+    });
 }
 
 // Setup event listeners

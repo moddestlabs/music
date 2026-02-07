@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
 use tauri::State;
 use std::sync::Mutex;
 
@@ -17,6 +16,8 @@ struct AppState {
     config: Mutex<Config>,
 }
 
+// Song metadata structure (for potential future use)
+#[allow(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
 struct SongMetadata {
     artist: String,
@@ -89,13 +90,15 @@ async fn upload_to_github(
     metadata_json: String,
     filename: String,
 ) -> Result<String, String> {
-    let config = state.config.lock().unwrap();
-    
-    let token = config.github_token.as_ref()
-        .ok_or("No GitHub token found. Please configure credentials.")?;
-    
-    let owner = &config.github_owner;
-    let repo = &config.github_repo;
+    // Clone values from config to avoid holding lock across await
+    let (token, owner, repo) = {
+        let config = state.config.lock().unwrap();
+        let token = config.github_token.clone()
+            .ok_or("No GitHub token found. Please configure credentials.")?;
+        let owner = config.github_owner.clone();
+        let repo = config.github_repo.clone();
+        (token, owner, repo)
+    }; // MutexGuard dropped here
     
     let client = reqwest::Client::new();
     
@@ -164,15 +167,16 @@ async fn upload_to_github(
 
 // Open native file dialog
 #[tauri::command]
-async fn select_audio_file(app: tauri::AppHandle) -> Result<Option<PathBuf>, String> {
-    use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
+async fn select_audio_file(app: tauri::AppHandle) -> Result<Option<String>, String> {
+    use tauri_plugin_dialog::DialogExt;
     
     let file_path = app.dialog()
         .file()
         .add_filter("Audio Files", &["mp3", "wav", "m4a", "flac", "ogg"])
         .blocking_pick_file();
     
-    Ok(file_path.map(|f| f.path.to_path_buf()))
+    // Convert FilePath to String
+    Ok(file_path.map(|f| f.to_string()))
 }
 
 fn main() {

@@ -18,6 +18,16 @@ A password-protected music web application with client-side encryption, built fo
 
 ### For Admins (Adding Songs)
 
+#### Option 1: Desktop App (Recommended)
+Download the [Music Uploader desktop app](music-uploader/README.md) for the easiest workflow:
+
+1. Download and install from [Releases](../../releases)
+2. Configure your GitHub credentials (one-time setup)
+3. Drag and drop MP3 files to encrypt and upload
+4. App automatically updates catalog.json
+5. Everything syncs directly to GitHub
+
+#### Option 2: Web Interface
 1. Open `admin.html` in your browser
 2. Upload an MP3 file
 3. Add genres (optional, comma-separated)
@@ -54,6 +64,12 @@ music/
 │   ├── song.encrypted  # Encrypted audio file
 │   ├── song.json       # Song metadata
 │   └── README.md       # Music folder documentation
+├── music-uploader/     # Desktop app for admins
+│   ├── src/            # Frontend (HTML/CSS/JS)
+│   ├── src-tauri/      # Rust backend
+│   └── README.md       # Desktop app documentation
+├── .github/
+│   └── workflows/      # GitHub Actions for automation
 ├── README.md           # This file
 ├── QUICKSTART.md       # Quick start guide
 └── FAVICON.md          # Favicon setup guide
@@ -112,13 +128,22 @@ Music can be installed as a standalone app on any device:
 
 Once installed, Music works like a native app with offline capabilities for the interface (songs still require internet to load initially).
 
-## �🔧 Technologies Used
+## 🛠️ Technologies Used
 
+### Web Application
 - **HTML5** - Structure and audio element
 - **CSS3** - Modern styling with gradients, animations, grid/flexbox
 - **Vanilla JavaScript (ES6+)** - No frameworks, pure JS
 - **Web Crypto API** - Browser-native encryption/decryption
 - **GitHub Pages** - Static hosting (no server needed)
+
+### Desktop App
+- **Tauri 2.x** - Cross-platform desktop framework (5-10 MB apps)
+- **Rust** - High-performance backend with secure credential storage
+- **GitHub API** - Direct integration for seamless uploads
+- **OS Keychain** - Secure storage for GitHub credentials
+
+[Learn more about the desktop app →](music-uploader/README.md)
 
 ## 🌐 Browser Compatibility
 

@@ -1,6 +1,25 @@
 # Music Uploader - Tauri Desktop App
 
+![Build Status](https://github.com/moddestlabs/music/actions/workflows/build-tauri-app.yml/badge.svg)
+
 A secure desktop application for encrypting and uploading music files directly to your GitHub repository.
+
+## 🚀 Quick Start
+
+### Download Pre-built App (Easiest)
+
+**Windows users can download the latest installer directly:**
+
+1. Go to [Releases](https://github.com/moddestlabs/music/releases)
+2. Download the latest `.msi` installer
+3. Run the installer
+4. Launch "Music Uploader" from Start Menu
+
+**Or get the latest development build:**
+- Visit [GitHub Actions](https://github.com/moddestlabs/music/actions)
+- Download from the latest successful build
+
+See [AUTOMATED_BUILDS.md](AUTOMATED_BUILDS.md) for full details.
 
 ## Features
 

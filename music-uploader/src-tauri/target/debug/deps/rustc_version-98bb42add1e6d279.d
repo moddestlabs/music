@@ -1,0 +1,7 @@
+/workspaces/music/music-uploader/src-tauri/target/debug/deps/rustc_version-98bb42add1e6d279.d: /home/codespace/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_version-0.4.1/src/lib.rs
+
+/workspaces/music/music-uploader/src-tauri/target/debug/deps/librustc_version-98bb42add1e6d279.rlib: /home/codespace/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_version-0.4.1/src/lib.rs
+
+/workspaces/music/music-uploader/src-tauri/target/debug/deps/librustc_version-98bb42add1e6d279.rmeta: /home/codespace/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_version-0.4.1/src/lib.rs
+
+/home/codespace/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_version-0.4.1/src/lib.rs:

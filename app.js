@@ -211,11 +211,14 @@ function renderMusicList() {
         // Generate unique ID for this music item's icon
         const iconId = `music-icon-${song.id}`;
         
+        // Generate URL-safe artist name for image (e.g., "Matt Strauss" -> "matt-strauss")
+        const artistImageName = song.artist ? generateFilenameFromText(song.artist) : '';
+        
         return `
             <div class="music-item" onclick="openPasswordModal(${song.id})">
                 <div class="music-item-content">
                     <div class="music-item-header">
-                        <div class="music-icon" id="${iconId}" data-artist="${song.artist || ''}">
+                        <div class="music-icon" id="${iconId}" data-artist-image="${artistImageName}">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="white">
                                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                                 <circle cx="10" cy="17" r="2"/>
@@ -244,19 +247,27 @@ function renderMusicList() {
     loadArtistImages();
 }
 
+// Generate URL-safe filename from text (same logic as admin page)
+function generateFilenameFromText(text) {
+    return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+}
+
 // Load artist images for music items
 function loadArtistImages() {
-    // Find all music icons that have an artist
-    const musicIcons = document.querySelectorAll('.music-icon[data-artist]');
+    // Find all music icons that have an artist image name
+    const musicIcons = document.querySelectorAll('.music-icon[data-artist-image]');
     
     musicIcons.forEach(icon => {
-        const artist = icon.dataset.artist;
-        if (!artist) return;
+        const artistImageName = icon.dataset.artistImage;
+        if (!artistImageName) return;
         
-        // Create image element
+        // Create image element using URL-safe artist name
         const img = new Image();
         img.className = 'artist-image';
-        img.src = `music/${encodeURIComponent(artist)}.jpg`;
+        img.src = `music/${artistImageName}.jpg`;
         
         img.onload = function() {
             // Image loaded successfully, replace SVG with image
@@ -363,7 +374,8 @@ async function openPasswordModal(songId) {
     // No cached password worked, show the modal
     const artist = song.artist || 'Unknown Artist';
     const title = song.title || 'Untitled';
-    const artistImageSrc = song.artist ? `music/${encodeURIComponent(song.artist)}.jpg` : '';
+    const artistImageName = song.artist ? generateFilenameFromText(song.artist) : '';
+    const artistImageSrc = artistImageName ? `music/${artistImageName}.jpg` : '';
     
     document.getElementById('modalSongTitle').textContent = title;
     document.getElementById('modalArtist').textContent = artist;
@@ -512,7 +524,8 @@ function base64ToArrayBuffer(base64) {
 function openPlayerModal(decryptedBlob) {
     const artist = currentSong.artist || 'Unknown Artist';
     const title = currentSong.title || 'Untitled';
-    const artistImageSrc = currentSong.artist ? `music/${encodeURIComponent(currentSong.artist)}.jpg` : '';
+    const artistImageName = currentSong.artist ? generateFilenameFromText(currentSong.artist) : '';
+    const artistImageSrc = artistImageName ? `music/${artistImageName}.jpg` : '';
     
     document.getElementById('playerSongTitle').textContent = title;
     document.getElementById('playerArtist').textContent = artist;

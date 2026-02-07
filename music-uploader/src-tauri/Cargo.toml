@@ -1,0 +1,28 @@
+[package]
+name = "music-uploader"
+version = "0.1.0"
+description = "Music Encryption & Upload Tool"
+authors = ["you"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["devtools"] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "multipart"] }
+base64 = "0.22"
+aes-gcm = "0.10"
+pbkdf2 = {version = "0.12", features = ["simple"]}
+sha2 = "0.10"
+rand = "0.8"
+keyring = "2.3"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

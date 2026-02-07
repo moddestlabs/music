@@ -1,0 +1,14 @@
+{
+  "name": "music-uploader",
+  "version": "0.1.0",
+  "description": "Encrypt and upload music files to GitHub",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:win": "tauri build --target x86_64-pc-windows-msvc"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

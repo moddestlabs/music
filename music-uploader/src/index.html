@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Admin - Encrypt & Upload</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.svg">
+    <meta name="theme-color" content="#6366f1">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #a855f7;
+            --background: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface-light: #252538;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --error: #ef4444;
+            --success: #10b981;
+            --shadow: rgba(99, 102, 241, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--surface-light);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 1rem;
+            font-weight: 500;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            opacity: 0.9;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info strong {
+            color: var(--text-primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: var(--surface-light);
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.5;
+        }
+
+        .progress {
+            display: none;
+            margin-top: 20px;
+            padding: 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .progress.active {
+            display: block;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-step .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--surface-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .progress-step.complete .icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .progress-step.active .icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .success-message {
+            display: none;
+            margin-top: 20px;
+            padding: 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .download-buttons button {
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .info-box code {
+            background: var(--surface-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .metadata-preview {
+            display: none;
+            margin-top: 20px;
+            padding: 1rem;
+            background: var(--surface-light);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            color: var(--text-secondary);
+        }
+
+        .metadata-preview.active {
+            display: block;
+        }
+
+        .helper-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="url(#gradient)" stroke-width="3"/>
+                    <path d="M15 14L28 20L15 26V14Z" fill="url(#gradient)"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1"/>
+                            <stop offset="100%" style="stop-color:#a855f7"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Music Admin</h1>
+            </div>
+            <p class="subtitle">Encrypt and Upload Your Music</p>
+        </div>
+
+       <!-- GitHub Settings Section -->
+        <div class="info-box" id="settingsBox">
+            <strong>⚙️ GitHub Settings</strong>
+            <div style="margin-top: 10px;">
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="text" id="githubOwner" placeholder="GitHub Owner (e.g., moddestlabs)" style="margin-bottom:8px;">
+                    <input type="text" id="githubRepo" placeholder="Repository Name (e.g., music)" style="margin-bottom:8px;">
+                    <input type="password" id="githubToken" placeholder="GitHub Personal Access Token">
+                    <p class="helper-text" style="margin-top: 8px;">Your token is stored securely in your OS keychain. Get a token from: github.com/settings/tokens</p>
+                </div>
+                <button type="button" id="saveSettingsBtn" style="margin-top: 0;">Save Settings</button>
+                <div id="settingsStatus" style="margin-top: 10px; font-size: 0.85rem;"></div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>📝 How it works:</strong>
+            1. Configure GitHub settings above (one-time setup)<br>
+            2. Upload your MP3 file (filename format: Artist_Title)<br>
+            3. Enter genres and password<br>
+            4. Click encrypt & upload - files go directly to GitHub!<br>
+            5. Upload artist image manually as <code>artist-name.jpg</code> (e.g., <code>matt-strauss.jpg</code>)
+        </div>
+
+        <form id="encryptForm">
+            <div class="form-group">
+                <label for="audioFile">Select Audio File *</label>
+                <input type="file" id="audioFile" accept="audio/*" required>
+                <div class="file-info" id="fileInfo"></div>
+                <p class="helper-text">Filename format: Artist_Title (e.g., Matt Strauss_My Rock of Salvation.mp3)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="genres">Genres</label>
+                <input type="text" id="genres" placeholder="e.g., Electronic, Chill, Ambient">
+                <p class="helper-text">Comma-separated list (optional, for filtering)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Duration *</label>
+                <input type="text" id="duration" placeholder="e.g., 3:45" readonly>
+                <p class="helper-text">Auto-detected from audio file</p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Playback Password *</label>
+                <input type="password" id="password" placeholder="Enter password for this song" required>
+                <p class="helper-text">Users will need this password to play the song</p>
+            </div>
+
+            <button type="submit" id="encryptBtn">� Encrypt & Upload to GitHub</button>
+        </form>
+
+        <div class="progress" id="progress">
+            <div class="progress-step" id="step1">
+                <div class="icon">1</div>
+                <span>Reading audio file...</span>
+            </div>
+            <div class="progress-step" id="step2">
+                <div class="icon">2</div>
+                <span>Encrypting with AES-256-GCM...</span>
+            </div>
+            <div class="progress-step" id="step3">
+                <div class="icon">3</div>
+                <span>Generating metadata...</span>
+            </div>
+            <div class="progress-step" id="step4">
+                <div class="icon">4</div>
+                <span>Uploading to GitHub...</span>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <h3>✅ Upload Complete!</h3>
+            <p>Files successfully uploaded to GitHub!</p>
+            <div class="download-buttons">
+                <button id="downloadEncrypted">📦 Download Encrypted (Backup)</button>
+                <button id="downloadMetadata">📄 Download Metadata (Backup)</button>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.8rem;">
+                Optional: Download backup copies of the files.
+            </p>
+        </div>
+
+        <div class="metadata-preview" id="metadataPreview"></div>
+    </div>
+
+    <script>
+        // Tauri API
+        const { invoke } = window.__TAURI__.core;
+        
+        let selectedFile = null;
+        let encryptedData = null;
+        let metadataJson = null;
+        let audioElement = new Audio();
+
+        // Load saved GitHub settings on startup
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const credentials = await invoke('load_credentials');
+                if (credentials) {
+                    document.getElementById('githubOwner').value = credentials.github_owner || '';
+                    document.getElementById('githubRepo').value = credentials.github_repo || '';
+                    document.getElementById('settingsStatus').innerHTML = '<span style="color: var(--success);">✓ Settings loaded</span>';
+                }
+            } catch (error) {
+                console.log('No saved credentials');
+            }
+        });
+
+        // Save GitHub settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
+            const owner = document.getElementById('githubOwner').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const token = document.getElementById('githubToken').value.trim();
+            const statusDiv = document.getElementById('settingsStatus');
+
+            if (!owner || !repo || !token) {
+                statusDiv.innerHTML = '<span style="color: var(--error);">Please fill in all fields</span>';
+                return;
+            }
+
+            try {
+                await invoke('save_credentials', { token, owner, repo });
+                statusDiv.innerHTML = '<span style="color: var(--success);">✓ Settings saved securely!</span>';
+                document.getElementById('githubToken').value = ''; // Clear token input
+            } catch (error) {
+                statusDiv.innerHTML = `<span style="color: var(--error);">Error: ${error}</span>`;
+            }
+        });
+
+        // File selection handler
+        document.getElementById('audioFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            selectedFile = file;
+
+            // Detect duration
+            const fileUrl = URL.createObjectURL(file);
+            audioElement.src = fileUrl;
+            
+            audioElement.addEventListener('loadedmetadata', () => {
+                const duration = audioElement.duration;
+                const mins = Math.floor(duration / 60);
+                const secs = Math.floor(duration % 60);
+                document.getElementById('duration').value = `${mins}:${secs.toString().padStart(2, '0')}`;
+                URL.revokeObjectURL(fileUrl);
+            }, { once: true });
+
+            // Show file info
+            const fileInfo = document.getElementById('fileInfo');
+            const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+            const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+            
+            // Parse Artist_Title format
+            let artist = 'Unknown Artist';
+            let title = nameWithoutExt;
+            if (nameWithoutExt.includes('_')) {
+                const parts = nameWithoutExt.split('_');
+                artist = parts[0].trim();
+                title = parts.slice(1).join('_').trim();
+            }
+            
+            fileInfo.innerHTML = `
+                <strong>File:</strong> ${file.name}<br>
+                <strong>Artist:</strong> ${artist}<br>
+                <strong>Title:</strong> ${title}<br>
+                <strong>Size:</strong> ${sizeMB} MB<br>
+                <strong>Type:</strong> ${file.type || 'Unknown'}
+            `;
+            fileInfo.classList.add('active');
+        });
+
+        // Form submission handler
+        document.getElementById('encryptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedFile) {
+                alert('Please select an audio file');
+                return;
+            }
+
+            // Extract artist and title from filename (format: Artist_Title)
+            const nameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, "");
+            let artist = 'Unknown Artist';
+            let title = nameWithoutExt;
+            if (nameWithoutExt.includes('_')) {
+                const parts = nameWithoutExt.split('_');
+                artist = parts[0].trim();
+                title = parts.slice(1).join('_').trim();
+            }
+            
+            const genresInput = document.getElementById('genres').value.trim();
+            const genres = genresInput 
+                ? genresInput.split(',').map(g => g.trim()).filter(g => g.length > 0)
+                : [];
+            const duration = document.getElementById('duration').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!duration || !password) {
+                alert('Please wait for duration detection and enter a password');
+                return;
+            }
+
+            // Disable form and show progress
+            document.getElementById('encryptBtn').disabled = true;
+            document.getElementById('progress').classList.add('active');
+            document.getElementById('successMessage').classList.remove('active');
+            document.getElementById('metadataPreview').classList.remove('active');
+
+            try {
+                // Step 1: Read file
+                updateProgress(1, 'active');
+                const fileBuffer = await readFileAsArrayBuffer(selectedFile);
+                updateProgress(1, 'complete');
+
+                // Step 2: Encrypt
+                updateProgress(2, 'active');
+                const { encrypted, salt, iv } = await encryptFile(fileBuffer, password);
+                updateProgress(2, 'complete');
+
+                // Step 3: Generate metadata
+                updateProgress(3, 'active');
+                const metadata = {
+                    artist: artist,
+                    title: title,
+                    genres: genres,
+                    duration: duration,
+                    filename: generateFilename(selectedFile.name),
+                    salt: arrayBufferToBase64(salt),
+                    iv: arrayBufferToBase64(iv),
+                    encryptedAt: new Date().toISOString()
+                };
+                updateProgress(3, 'complete');
+
+                // Step 4: Upload to GitHub
+                updateProgress(4, 'active');
+                const encryptedArray = Array.from(new Uint8Array(encrypted));
+                const metadataString = JSON.stringify(metadata, null, 2);
+                
+                try {
+                    const result = await invoke('upload_to_github', {
+                        encryptedData: encryptedArray,
+                        metadataJson: metadataString,
+                        filename: metadata.filename
+                    });
+                    
+                    updateProgress(4, 'complete');
+                    
+                    // Show success message with upload confirmation
+                    const successMsg = document.getElementById('successMessage');
+                    successMsg.querySelector('h3').textContent = '✅ Upload Complete!';
+                    successMsg.querySelector('p').textContent = result;
+                    successMsg.classList.add('active');
+                    
+                    // Also store data for optional download
+                    encryptedData = {
+                        blob: new Blob([encrypted], { type: 'application/octet-stream' }),
+                        filename: metadata.filename + '.encrypted'
+                    };
+                    metadataJson = {
+                        data: metadataString,
+                        filename: metadata.filename + '.json'
+                    };
+                    
+                    document.getElementById('metadataPreview').textContent = metadataJson.data;
+                    document.getElementById('metadataPreview').classList.add('active');
+                    
+                } catch (uploadError) {
+                    updateProgress(4, 'complete');
+                    
+                    // If upload fails, still allow download
+                    encryptedData = {
+                        blob: new Blob([encrypted], { type: 'application/octet-stream' }),
+                        filename: metadata.filename + '.encrypted'
+                    };
+                    metadataJson = {
+                        data: JSON.stringify(metadata, null, 2),
+                        filename: metadata.filename + '.json'
+                    };
+                    
+                    alert('Upload failed: ' + uploadError + '\n\nYou can still download the files manually.');
+                    document.getElementById('successMessage').classList.add('active');
+                    document.getElementById('metadataPreview').textContent = metadataJson.data;
+                    document.getElementById('metadataPreview').classList.add('active');
+                }
+
+            } catch (error) {
+                console.error('Encryption error:', error);
+                alert('Encryption failed: ' + error.message);
+            } finally {
+                document.getElementById('encryptBtn').disabled = false;
+            }
+        });
+
+        // Download handlers
+        document.getElementById('downloadEncrypted').addEventListener('click', () => {
+            if (!encryptedData) return;
+            downloadFile(encryptedData.blob, encryptedData.filename);
+        });
+
+        document.getElementById('downloadMetadata').addEventListener('click', () => {
+            if (!metadataJson) return;
+            const blob = new Blob([metadataJson.data], { type: 'application/json' });
+            downloadFile(blob, metadataJson.filename);
+        });
+
+        // Utility functions
+        function updateProgress(step, status) {
+            const element = document.getElementById(`step${step}`);
+            element.classList.remove('active', 'complete');
+            element.classList.add(status);
+        }
+
+        function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function encryptFile(fileBuffer, password) {
+            // Generate salt and IV
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+
+            // Derive key from password using PBKDF2
+            const passwordBuffer = new TextEncoder().encode(password);
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                passwordBuffer,
+                'PBKDF2',
+                false,
+                ['deriveBits', 'deriveKey']
+            );
+
+            const key = await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: salt,
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt']
+            );
+
+            // Encrypt the file
+            const encrypted = await crypto.subtle.encrypt(
+                {
+                    name: 'AES-GCM',
+                    iv: iv
+                },
+                key,
+                fileBuffer
+            );
+
+            return { encrypted, salt, iv };
+        }
+
+        function arrayBufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.length; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        function generateFilename(originalFilename) {
+            // Remove extension and sanitize
+            return originalFilename
+                .replace(/\.[^/.]+$/, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

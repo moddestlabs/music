@@ -26,5 +26,6 @@ Thumbs.db
 music/*
 !music/*.encrypted
 !music/*.json
+!music/*.jpg
 !music/README.md
 !music/catalog.json
